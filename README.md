@@ -81,6 +81,67 @@ For fixed laboratory setups (camera and plate position stable), use fixed-corner
 python scripts/detect.py --fixed-corners --cam-width 1920 --cam-height 1080
 ```
 
+For production-like behavior with temporal smoothing, uncertainty handling, and live LED ROI feedback:
+
+```bash
+python scripts/detect.py --fixed-corners --stable-frames 3 --retry-margin 0.02 --show-led-overlay
+```
+
+Notes:
+
+- `--stable-frames`: requires N consecutive frames before ON/OFF is accepted
+- `--retry-margin`: defines an uncertainty band around each LED threshold
+- `--show-led-overlay`: draws LED circles and `name:state score/threshold` on video
+
+Command-style pass/fail check:
+
+```bash
+python scripts/detect.py --fixed-corners --expect-led "F2=ON" --stable-frames 3 --retry-margin 0.02 --once
+```
+
+Optional snapshot logging (JSONL):
+
+```bash
+python scripts/detect.py --fixed-corners --expect-led "F2=ON" --log-file "logs/checks.jsonl"
+```
+
+Press `Space` to print and append one snapshot entry.
+
+## 4) Validation checklist (lab)
+
+Run:
+
+```bash
+python scripts/detect.py --fixed-corners --expect-led "F2=ON" --stable-frames 3 --retry-margin 0.02 --show-led-overlay --cam-width 1920 --cam-height 1080
+```
+
+Test sequence:
+
+1. Keep `F2` OFF -> expect `NOT_OK` or `RETRY`
+2. Turn `F2` ON -> expect `OK`
+3. Toggle quickly -> should briefly show `RETRY` before stabilizing
+
+Single-shot check:
+
+```bash
+python scripts/detect.py --once --fixed-corners --expect-led "F2=ON"
+```
+
+Logging check:
+
+```bash
+python scripts/detect.py --fixed-corners --expect-led "F2=ON" --log-file "logs/checks.jsonl"
+```
+
+Press `Space` multiple times and verify each line in `logs/checks.jsonl` includes timestamp, plate data, `check_status`, and LED scores.
+
+Tuning guidance:
+
+- Faster response: `--stable-frames 2`
+- More robust response: `--stable-frames 4`
+- Fewer `RETRY`: `--retry-margin 0.01`
+- Safer uncertainty zone: `--retry-margin 0.03`
+
 Check one LED by name:
 
 ```bash

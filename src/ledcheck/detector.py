@@ -21,6 +21,7 @@ class DetectionResult:
     match_score: float = 0.0
     leds: list[dict] | None = None
     corners: list[tuple[int, int]] | None = None
+    canonical_size: tuple[int, int] | None = None
 
 
 class LEDPlateDetector:
@@ -46,7 +47,7 @@ class LEDPlateDetector:
                 continue
             self.templates[plate.plate_id] = cv2.resize(img, plate.canonical_size)
 
-    def detect(self, frame_bgr: np.ndarray) -> DetectionResult:
+    def detect(self, frame_bgr: np.ndarray, retry_margin: float = 0.02) -> DetectionResult:
         # Fixed-corners mode is useful when camera and plate placement are static.
         if self.use_config_corners:
             best_plate: Optional[PlateConfig] = None
@@ -71,7 +72,7 @@ class LEDPlateDetector:
             if best_plate is None or best_warp is None or best_corners is None:
                 return DetectionResult(ok=False, message="No valid fixed corners in config.")
             corners_list = [(int(x), int(y)) for x, y in best_corners.tolist()]
-            leds = evaluate_leds(best_warp, best_plate)
+            leds = evaluate_leds(best_warp, best_plate, retry_margin=retry_margin)
             return DetectionResult(
                 ok=True,
                 message="Detection successful (fixed corners mode).",
@@ -80,6 +81,7 @@ class LEDPlateDetector:
                 match_score=max(0.0, best_score),
                 leds=leds,
                 corners=corners_list,
+                canonical_size=best_plate.canonical_size,
             )
 
         corners = detect_plate_corners(
@@ -118,9 +120,10 @@ class LEDPlateDetector:
                 message=f"Plate detected but uncertain type (score={best_score:.3f}).",
                 match_score=best_score,
                 corners=corners_list,
+                canonical_size=best_plate.canonical_size,
             )
 
-        leds = evaluate_leds(best_warp, best_plate)
+        leds = evaluate_leds(best_warp, best_plate, retry_margin=retry_margin)
         return DetectionResult(
             ok=True,
             message="Detection successful.",
@@ -129,10 +132,16 @@ class LEDPlateDetector:
             match_score=max(0.0, best_score),
             leds=leds,
             corners=corners_list,
+            canonical_size=best_plate.canonical_size,
         )
 
-    def check_led(self, frame_bgr: np.ndarray, led_name: str) -> DetectionResult:
-        result = self.detect(frame_bgr)
+    def check_led(
+        self,
+        frame_bgr: np.ndarray,
+        led_name: str,
+        retry_margin: float = 0.02,
+    ) -> DetectionResult:
+        result = self.detect(frame_bgr, retry_margin=retry_margin)
         if not result.ok or not result.leds:
             return result
         led_name_norm = led_name.strip().lower()
@@ -146,8 +155,9 @@ class LEDPlateDetector:
                 match_score=result.match_score,
                 leds=result.leds,
                 corners=result.corners,
+                canonical_size=result.canonical_size,
             )
-        state = "ON" if target["on"] else "OFF"
+        state = target.get("raw_state", "ON" if target["on"] else "OFF")
         return DetectionResult(
             ok=True,
             message=f"LED '{target['name']}' is {state}.",
@@ -156,5 +166,6 @@ class LEDPlateDetector:
             match_score=result.match_score,
             leds=[target],
             corners=result.corners,
+            canonical_size=result.canonical_size,
         )
 

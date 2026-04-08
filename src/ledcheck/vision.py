@@ -109,16 +109,29 @@ def red_led_score(canonical_bgr: np.ndarray, led: LEDConfig) -> float:
     return 0.7 * red_ratio + 0.3 * contrast
 
 
-def evaluate_leds(canonical_bgr: np.ndarray, plate: PlateConfig) -> list[dict]:
+def evaluate_leds(
+    canonical_bgr: np.ndarray,
+    plate: PlateConfig,
+    retry_margin: float = 0.02,
+) -> list[dict]:
     result = []
     for led in plate.leds:
         score = red_led_score(canonical_bgr, led)
+        if score >= (led.threshold + retry_margin):
+            raw_state = "ON"
+        elif score <= (led.threshold - retry_margin):
+            raw_state = "OFF"
+        else:
+            raw_state = "RETRY"
         result.append(
             {
                 "name": led.name,
                 "score": round(score, 4),
-                "on": bool(score >= led.threshold),
+                "on": raw_state == "ON",
+                "raw_state": raw_state,
                 "threshold": led.threshold,
+                "center": list(led.center),
+                "radius": led.radius,
             }
         )
     return result
