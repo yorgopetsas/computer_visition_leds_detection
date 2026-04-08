@@ -9,7 +9,7 @@ import numpy as np
 
 from .io_utils import load_plate_configs
 from .models import PlateConfig
-from .vision import detect_plate_corners, evaluate_leds, match_plate, warp_plate
+from .vision import detect_plate_corners, evaluate_leds, extract_rect, template_similarity, warp_plate
 
 
 @dataclass
@@ -29,6 +29,7 @@ class LEDPlateDetector:
         self.configs: Dict[str, PlateConfig] = load_plate_configs(config_dir)
         self.use_config_corners = use_config_corners
         self.templates: Dict[str, np.ndarray] = {}
+        self.label_templates: Dict[str, np.ndarray] = {}
         self.expected_aspect_ratio = 1.65
         if self.configs:
             ratios = []
@@ -46,6 +47,25 @@ class LEDPlateDetector:
             if img is None:
                 continue
             self.templates[plate.plate_id] = cv2.resize(img, plate.canonical_size)
+            label_path = Path(plate.label_template_image) if plate.label_template_image else Path("")
+            if label_path.exists():
+                label_img = cv2.imread(str(label_path))
+                if label_img is not None:
+                    self.label_templates[plate.plate_id] = label_img
+
+    def _score_plate_match(self, warped: np.ndarray, plate: PlateConfig) -> float:
+        full_template = self.templates.get(plate.plate_id)
+        full_score = template_similarity(warped, full_template) if full_template is not None else 0.0
+        label_score = 0.0
+        label_template = self.label_templates.get(plate.plate_id)
+        if label_template is not None and len(plate.label_roi) == 4:
+            roi_img = extract_rect(warped, plate.label_roi)
+            if roi_img.size > 0:
+                label_score = template_similarity(roi_img, label_template)
+        # Give label ROI a strong weight for plate identity certainty.
+        if label_template is not None:
+            return 0.45 * full_score + 0.55 * label_score
+        return full_score
 
     def detect(self, frame_bgr: np.ndarray, retry_margin: float = 0.02) -> DetectionResult:
         # Fixed-corners mode is useful when camera and plate placement are static.
@@ -59,11 +79,7 @@ class LEDPlateDetector:
                     continue
                 corners = np.array(plate.corners, dtype=np.float32)
                 warped = warp_plate(frame_bgr, corners, plate.canonical_size)
-                template = self.templates.get(plate.plate_id)
-                score = 0.0
-                if template is not None:
-                    matched = match_plate(warped, [(plate, template)])
-                    score = matched.score if matched else 0.0
+                score = self._score_plate_match(warped, plate)
                 if best_plate is None or score > best_score:
                     best_plate = plate
                     best_score = score
@@ -105,9 +121,9 @@ class LEDPlateDetector:
                     best_warp = warped
                     best_score = 0.0
                 continue
-            matched = match_plate(warped, [(plate, template)])
-            if matched and matched.score > best_score:
-                best_score = matched.score
+            score = self._score_plate_match(warped, plate)
+            if score > best_score:
+                best_score = score
                 best_plate = plate
                 best_warp = warped
 

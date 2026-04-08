@@ -31,7 +31,8 @@ Run once per plate. During calibration:
 
 1. click 4 corners in order (TL, TR, BR, BL)
 2. click LED centers in the same order as names passed in `--leds`
-3. press `Enter` to save
+3. mark model/name text ROI (top-left then bottom-right)
+4. press `Enter` to save
 
 Example for `K2 Electro`:
 

@@ -146,6 +146,19 @@ def template_similarity(a: np.ndarray, b: np.ndarray) -> float:
     return float(corr.max())
 
 
+def extract_rect(img: np.ndarray, rect_xyxy: list[int]) -> np.ndarray:
+    if len(rect_xyxy) != 4:
+        return img[0:0, 0:0]
+    x0, y0, x1, y1 = [int(v) for v in rect_xyxy]
+    x0 = max(0, min(img.shape[1] - 1, x0))
+    x1 = max(0, min(img.shape[1], x1))
+    y0 = max(0, min(img.shape[0] - 1, y0))
+    y1 = max(0, min(img.shape[0], y1))
+    if x1 <= x0 or y1 <= y0:
+        return img[0:0, 0:0]
+    return img[y0:y1, x0:x1]
+
+
 def match_plate(
     warped: np.ndarray,
     plate_templates: Iterable[tuple[PlateConfig, np.ndarray]],
