@@ -76,6 +76,11 @@ def read_args() -> argparse.Namespace:
         default=0,
         help="If >0, append one log entry every N frames (no Space key required).",
     )
+    parser.add_argument(
+        "--guided-sequence",
+        action="store_true",
+        help="Show operator sidebar and test LEDs one-by-one in mapped order.",
+    )
     return parser.parse_args()
 
 
@@ -145,6 +150,70 @@ def _draw_led_overlay(overlay: np.ndarray, result) -> None:
             color,
             1,
         )
+
+
+def _wrap_lines(text: str, max_chars: int = 34) -> list[str]:
+    words = text.split()
+    if not words:
+        return [""]
+    lines: list[str] = []
+    current = words[0]
+    for w in words[1:]:
+        if len(current) + 1 + len(w) <= max_chars:
+            current += " " + w
+        else:
+            lines.append(current)
+            current = w
+    lines.append(current)
+    return lines
+
+
+def _draw_guided_sidebar(frame: np.ndarray, result, guided_index: int) -> np.ndarray:
+    panel_w = 420
+    h = frame.shape[0]
+    panel = np.full((h, panel_w, 3), (255, 235, 205), dtype=np.uint8)  # light blue-ish
+    font_color = (0, 0, 255)  # red text
+
+    y = 40
+    cv2.putText(panel, "PCB DETECTED", (16, y), cv2.FONT_HERSHEY_SIMPLEX, 0.75, font_color, 2)
+    y += 36
+    pcb_name = result.plate_name if result.plate_name else "Unknown"
+    for line in _wrap_lines(pcb_name, max_chars=24):
+        cv2.putText(panel, line, (16, y), cv2.FONT_HERSHEY_SIMPLEX, 0.72, font_color, 2)
+        y += 30
+
+    y += 10
+    cv2.putText(panel, "INSTRUCTIONS", (16, y), cv2.FONT_HERSHEY_SIMPLEX, 0.75, font_color, 2)
+    y += 34
+
+    leds = result.leds or []
+    if not leds:
+        lines = ["Waiting for LED data..."]
+    elif guided_index >= len(leds):
+        lines = ["All LEDs tested.", "Sequence complete."]
+    else:
+        target = leds[guided_index]
+        state = target.get("state", target.get("raw_state", "RETRY"))
+        lines = [
+            f"Now test LED {target['name']}.",
+            "Turn only this LED ON.",
+            f"Current state: {state}",
+            f"Score: {target['score']:.3f}",
+        ]
+    for text in lines:
+        for line in _wrap_lines(text):
+            cv2.putText(panel, line, (16, y), cv2.FONT_HERSHEY_SIMPLEX, 0.65, font_color, 2)
+            y += 28
+        y += 4
+
+    y = h - 80
+    cv2.putText(panel, "Press Q or ESC to exit", (16, y), cv2.FONT_HERSHEY_SIMPLEX, 0.6, font_color, 2)
+    y += 28
+    cv2.putText(panel, "Space: print current status", (16, y), cv2.FONT_HERSHEY_SIMPLEX, 0.6, font_color, 2)
+    y += 28
+    cv2.putText(panel, "R: reset guided sequence", (16, y), cv2.FONT_HERSHEY_SIMPLEX, 0.6, font_color, 2)
+
+    return np.hstack([frame, panel])
 
 
 def print_result(result) -> None:
@@ -226,6 +295,7 @@ def main() -> None:
     cv2.resizeWindow("led-check", 1400, 900)
     histories = defaultdict(lambda: deque(maxlen=max(1, args.stable_frames)))
     frame_idx = 0
+    guided_index = 0
 
     while True:
         if cv2.getWindowProperty("led-check", cv2.WND_PROP_VISIBLE) < 1:
@@ -242,6 +312,13 @@ def main() -> None:
         smooth_frames = 1 if args.once else max(1, args.stable_frames)
         result = _apply_temporal_smoothing(result, histories, smooth_frames)
         check_status, check_message = _evaluate_expectation(result, expected)
+
+        if args.guided_sequence and result.leds:
+            if guided_index < len(result.leds):
+                target = result.leds[guided_index]
+                target_state = target.get("state", target.get("raw_state", "RETRY"))
+                if target_state == "ON":
+                    guided_index += 1
 
         overlay = frame.copy()
         color = (0, 200, 0) if result.ok else (0, 0, 255)
@@ -281,6 +358,8 @@ def main() -> None:
             )
         if args.show_led_overlay:
             _draw_led_overlay(overlay, result)
+        if args.guided_sequence:
+            overlay = _draw_guided_sidebar(overlay, result, guided_index)
         cv2.imshow("led-check", overlay)
         if args.once:
             print_result(result)
@@ -301,6 +380,8 @@ def main() -> None:
             if check_status != "N/A":
                 print(check_message)
             _log_snapshot(args.log_file, result, check_status, check_message)
+        if args.guided_sequence and key == ord("r"):
+            guided_index = 0
         if args.log_file and args.log_every_n_frames > 0 and (frame_idx % args.log_every_n_frames == 0):
             _log_snapshot(args.log_file, result, check_status, check_message)
 

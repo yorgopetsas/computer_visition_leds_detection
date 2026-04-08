@@ -88,11 +88,19 @@ For production-like behavior with temporal smoothing, uncertainty handling, and 
 python scripts/detect.py --fixed-corners --stable-frames 3 --retry-margin 0.02 --show-led-overlay
 ```
 
+Guided one-by-one LED test with operator sidebar:
+
+```bash
+python scripts/detect.py --fixed-corners --show-led-overlay --guided-sequence --cam-width 1920 --cam-height 1080
+```
+
 Notes:
 
 - `--stable-frames`: requires N consecutive frames before ON/OFF is accepted
 - `--retry-margin`: defines an uncertainty band around each LED threshold
 - `--show-led-overlay`: draws LED circles and `name:state score/threshold` on video
+- `--guided-sequence`: sidebar instructions, auto-advance when current LED turns ON
+- guided mode hotkeys: `R` resets sequence, `Space` prints status, `Q`/`Esc` exits
 
 Command-style pass/fail check:
 
