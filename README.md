@@ -100,7 +100,8 @@ Notes:
 - `--retry-margin`: defines an uncertainty band around each LED threshold
 - `--show-led-overlay`: draws LED circles and `name:state score/threshold` on video
 - `--guided-sequence`: sidebar instructions, auto-advance when current LED turns ON
-- guided mode hotkeys: `R` resets sequence, `Space` prints status, `Q`/`Esc` exits
+- `--preview-scale`: scales display without changing detection geometry (e.g. `1.2`)
+- guided mode hotkeys: `Enter` confirms next LED after ON detection, `R` resets sequence, `Space` prints status, `Q`/`Esc` exits
 
 Command-style pass/fail check:
 

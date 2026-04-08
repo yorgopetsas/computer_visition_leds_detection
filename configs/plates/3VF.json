@@ -1,0 +1,344 @@
+{
+  "plate_id": "3VF",
+  "display_name": "3VF",
+  "bottom_label_hint": "3VF",
+  "canonical_size": [
+    2200,
+    1320
+  ],
+  "corners": [
+    [
+      632,
+      377
+    ],
+    [
+      1292,
+      371
+    ],
+    [
+      1304,
+      815
+    ],
+    [
+      630,
+      830
+    ]
+  ],
+  "leds": [
+    {
+      "name": "F2_FOTOCELULA_2",
+      "center": [
+        246,
+        110
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "F1FOTOCELULA_1",
+      "center": [
+        248,
+        166
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "35_PISADERA_MOVIL",
+      "center": [
+        251,
+        220
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "34_PULS_CIERRA_PUERTAS",
+      "center": [
+        247,
+        277
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "33_BOMBEROS_CABINA",
+      "center": [
+        248,
+        332
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "32_SONDA_TERMICA",
+      "center": [
+        249,
+        386
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "31_REAPERTURA",
+      "center": [
+        249,
+        443
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "30_F_C_ABRRIR_PUERTAS",
+      "center": [
+        251,
+        499
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "29_F_C_CERRAR_PUERTAS",
+      "center": [
+        252,
+        553
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "28_COMPLETO",
+      "center": [
+        250,
+        609
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "27_BOMBEROS_EXTERIOR",
+      "center": [
+        249,
+        663
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "26_INSPECCION",
+      "center": [
+        251,
+        719
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "25_PARADOR_DE_SUBIDA",
+      "center": [
+        251,
+        772
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "24_PARRADOR_DE_BAJADA",
+      "center": [
+        253,
+        828
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "23_EXCESO_DE_CARGA",
+      "center": [
+        251,
+        886
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "22_CAMBIO_C_P_SUB",
+      "center": [
+        251,
+        942
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "21PAROI_C_P_BAJ",
+      "center": [
+        252,
+        998
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "20_Vdc",
+      "center": [
+        247,
+        1057
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "EN_ENABLE",
+      "center": [
+        1053,
+        108
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "FWD_SUBIDA",
+      "center": [
+        1053,
+        163
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "REV_BAJADA",
+      "center": [
+        1053,
+        220
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "X1_SENAL_VELOCIDAD_1",
+      "center": [
+        1053,
+        277
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "X2_SENAL_VELOCIDAD_2",
+      "center": [
+        1054,
+        330
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "X3_SENAL_VELOCIDAD_3",
+      "center": [
+        1054,
+        387
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "CF",
+      "center": [
+        1054,
+        442
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "A1_ABRIR_PUERTAS_1",
+      "center": [
+        1053,
+        553
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "A2_ABRIR_PUERTAS_2",
+      "center": [
+        1057,
+        606
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "CP_CERRAR_PUERTAS",
+      "center": [
+        1056,
+        660
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "41_SERIE_PUERTAS_DE_CABINA",
+      "center": [
+        1055,
+        772
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "40_SERIE_CERROJOS",
+      "center": [
+        1053,
+        830
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "39_SERIE_PUERTAS_EXTERIORES",
+      "center": [
+        1057,
+        883
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "37_SERIE_SEGURIDADES_HUECO",
+      "center": [
+        1055,
+        941
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "SC_SERIE_SEGURIDADES_CABINA",
+      "center": [
+        1054,
+        994
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "36_TENSION_SERIES",
+      "center": [
+        1057,
+        1054
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    }
+  ],
+  "label_roi": [
+    804,
+    1205,
+    1021,
+    1286
+  ],
+  "label_template_image": "C:\\Users\\ecommerce\\envz\\computer_visition_leds_detection\\configs\\plates\\3VF_label_template.png",
+  "template_image": "C:\\Users\\ecommerce\\envz\\computer_visition_leds_detection\\configs\\plates\\3VF_template.png",
+  "confidence_threshold": 0.22
+}

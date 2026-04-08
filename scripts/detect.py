@@ -24,6 +24,12 @@ def read_args() -> argparse.Namespace:
     parser.add_argument("--cam-width", type=int, default=1920, help="Requested camera width.")
     parser.add_argument("--cam-height", type=int, default=1080, help="Requested camera height.")
     parser.add_argument(
+        "--preview-scale",
+        type=float,
+        default=1.0,
+        help="Display scale factor for preview window (e.g. 1.25).",
+    )
+    parser.add_argument(
         "--config-dir",
         default="configs/plates",
         help="Directory with plate JSON config files.",
@@ -194,12 +200,19 @@ def _draw_guided_sidebar(frame: np.ndarray, result, guided_index: int) -> np.nda
     else:
         target = leds[guided_index]
         state = target.get("state", target.get("raw_state", "RETRY"))
-        lines = [
-            f"Now test LED {target['name']}.",
-            "Turn only this LED ON.",
-            f"Current state: {state}",
-            f"Score: {target['score']:.3f}",
-        ]
+        if state == "ON":
+            lines = [
+                f"LED {target['name']} detected ON.",
+                "Press ENTER for next LED.",
+                f"Score: {target['score']:.3f}",
+            ]
+        else:
+            lines = [
+                f"Now test LED {target['name']}.",
+                "Turn only this LED ON.",
+                f"Current state: {state}",
+                f"Score: {target['score']:.3f}",
+            ]
     for text in lines:
         for line in _wrap_lines(text):
             cv2.putText(panel, line, (16, y), cv2.FONT_HERSHEY_SIMPLEX, 0.65, font_color, 2)
@@ -212,6 +225,8 @@ def _draw_guided_sidebar(frame: np.ndarray, result, guided_index: int) -> np.nda
     cv2.putText(panel, "Space: print current status", (16, y), cv2.FONT_HERSHEY_SIMPLEX, 0.6, font_color, 2)
     y += 28
     cv2.putText(panel, "R: reset guided sequence", (16, y), cv2.FONT_HERSHEY_SIMPLEX, 0.6, font_color, 2)
+    y += 28
+    cv2.putText(panel, "Enter: confirm next LED", (16, y), cv2.FONT_HERSHEY_SIMPLEX, 0.6, font_color, 2)
 
     return np.hstack([frame, panel])
 
@@ -289,10 +304,20 @@ def main() -> None:
     cap = cv2.VideoCapture(args.camera)
     if not cap.isOpened():
         raise RuntimeError(f"Cannot open camera index {args.camera}")
+    cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*"MJPG"))
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, args.cam_width)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, args.cam_height)
-    cv2.namedWindow("led-check", cv2.WINDOW_NORMAL)
-    cv2.resizeWindow("led-check", 1400, 900)
+    cv2.namedWindow("led-check", cv2.WINDOW_AUTOSIZE)
+    scale = max(0.2, float(args.preview_scale))
+
+    def to_display(img):
+        if scale == 1.0:
+            return img
+        return cv2.resize(
+            img,
+            (int(img.shape[1] * scale), int(img.shape[0] * scale)),
+            interpolation=cv2.INTER_LINEAR,
+        )
     histories = defaultdict(lambda: deque(maxlen=max(1, args.stable_frames)))
     frame_idx = 0
     guided_index = 0
@@ -312,13 +337,6 @@ def main() -> None:
         smooth_frames = 1 if args.once else max(1, args.stable_frames)
         result = _apply_temporal_smoothing(result, histories, smooth_frames)
         check_status, check_message = _evaluate_expectation(result, expected)
-
-        if args.guided_sequence and result.leds:
-            if guided_index < len(result.leds):
-                target = result.leds[guided_index]
-                target_state = target.get("state", target.get("raw_state", "RETRY"))
-                if target_state == "ON":
-                    guided_index += 1
 
         overlay = frame.copy()
         color = (0, 200, 0) if result.ok else (0, 0, 255)
@@ -360,7 +378,7 @@ def main() -> None:
             _draw_led_overlay(overlay, result)
         if args.guided_sequence:
             overlay = _draw_guided_sidebar(overlay, result, guided_index)
-        cv2.imshow("led-check", overlay)
+        cv2.imshow("led-check", to_display(overlay))
         if args.once:
             print_result(result)
             if check_status != "N/A":
@@ -382,6 +400,12 @@ def main() -> None:
             _log_snapshot(args.log_file, result, check_status, check_message)
         if args.guided_sequence and key == ord("r"):
             guided_index = 0
+        if args.guided_sequence and key in (10, 13):
+            if result.leds and guided_index < len(result.leds):
+                target = result.leds[guided_index]
+                target_state = target.get("state", target.get("raw_state", "RETRY"))
+                if target_state == "ON":
+                    guided_index += 1
         if args.log_file and args.log_every_n_frames > 0 and (frame_idx % args.log_every_n_frames == 0):
             _log_snapshot(args.log_file, result, check_status, check_message)
 
