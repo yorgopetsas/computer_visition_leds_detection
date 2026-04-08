@@ -195,6 +195,28 @@ Recommended test flow for this phase:
 4. Run tuner dry run and inspect suggested threshold changes.
 5. Apply with `--write`, then re-run validation checks.
 
+## 8) Simple operator command
+
+Use `run_check.py` for a simpler one-command workflow.
+
+Single-shot check (default):
+
+```bash
+python scripts/run_check.py --led "35" --expected ON
+```
+
+Live mode:
+
+```bash
+python scripts/run_check.py --led "35" --expected ON --live --show-overlay --log-every-n-frames 30
+```
+
+Notes:
+
+- fixed-corners mode is enabled by default
+- disable with `--no-fixed-corners` if needed
+- logs go to `logs/checks.jsonl` by default (override with `--log-file`)
+
 Check one LED by name:
 
 ```bash
