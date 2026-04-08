@@ -87,6 +87,16 @@ def read_args() -> argparse.Namespace:
         action="store_true",
         help="Show operator sidebar and test LEDs one-by-one in mapped order.",
     )
+    parser.add_argument(
+        "--anchor-top-left",
+        action="store_true",
+        help="Before detection, click PCB top-left corner to align fixed-corners mode.",
+    )
+    parser.add_argument(
+        "--interactive-startup",
+        action="store_true",
+        help="Prompt for PCB model and 4 corners before starting detection.",
+    )
     return parser.parse_args()
 
 
@@ -301,6 +311,24 @@ def main() -> None:
         (ROOT / args.config_dir).resolve(),
         use_config_corners=args.fixed_corners,
     )
+    forced_plate_id: str | None = None
+    if args.interactive_startup:
+        plate_ids = sorted(detector.configs.keys())
+        if not plate_ids:
+            raise RuntimeError("No plate profiles found in config directory.")
+        print("Select PCB model:")
+        for i, pid in enumerate(plate_ids, start=1):
+            name = detector.configs[pid].display_name
+            print(f"  {i}. {pid} ({name})")
+        while True:
+            raw = input("Model number: ").strip()
+            if raw.isdigit():
+                idx = int(raw)
+                if 1 <= idx <= len(plate_ids):
+                    forced_plate_id = plate_ids[idx - 1]
+                    break
+            print("Invalid selection. Try again.")
+        print(f"Selected model: {forced_plate_id}")
     cap = cv2.VideoCapture(args.camera)
     if not cap.isOpened():
         raise RuntimeError(f"Cannot open camera index {args.camera}")
@@ -309,6 +337,8 @@ def main() -> None:
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, args.cam_height)
     cv2.namedWindow("led-check", cv2.WINDOW_AUTOSIZE)
     scale = max(0.2, float(args.preview_scale))
+    anchor_top_left: tuple[int, int] | None = None
+    manual_corners: list[tuple[int, int]] | None = None
 
     def to_display(img):
         if scale == 1.0:
@@ -318,6 +348,88 @@ def main() -> None:
             (int(img.shape[1] * scale), int(img.shape[0] * scale)),
             interpolation=cv2.INTER_LINEAR,
         )
+    def to_original_point(x: int, y: int) -> tuple[int, int]:
+        if scale == 1.0:
+            return int(x), int(y)
+        return int(round(x / scale)), int(round(y / scale))
+
+    if args.interactive_startup and args.fixed_corners:
+        selected4: list[tuple[int, int]] = []
+
+        def on_4corners(event, x, y, _flags, _param):
+            if event == cv2.EVENT_LBUTTONDOWN and len(selected4) < 4:
+                selected4.append(to_original_point(x, y))
+
+        cv2.setMouseCallback("led-check", on_4corners)
+        print("Corner mode: click 4 corners in order TL, TR, BR, BL then press Enter.")
+        while True:
+            ok, frame = cap.read()
+            if not ok:
+                continue
+            preview = frame.copy()
+            cv2.putText(
+                preview,
+                "Click corners TL,TR,BR,BL then Enter",
+                (12, 30),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.7,
+                (0, 0, 255),
+                2,
+            )
+            for i, p in enumerate(selected4):
+                cv2.circle(preview, p, 8, (0, 255, 255), -1)
+                cv2.putText(preview, str(i + 1), (p[0] + 8, p[1] - 8), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
+            if len(selected4) == 4:
+                cv2.polylines(preview, [np.array(selected4, dtype=np.int32)], True, (0, 255, 255), 2)
+            cv2.imshow("led-check", to_display(preview))
+            key = cv2.waitKey(15) & 0xFF
+            if key == 27 or key == ord("q"):
+                cap.release()
+                cv2.destroyAllWindows()
+                return
+            if key == ord("r"):
+                selected4.clear()
+            if key in (10, 13) and len(selected4) == 4:
+                manual_corners = list(selected4)
+                break
+        cv2.setMouseCallback("led-check", lambda *a: None)
+    elif args.anchor_top_left and args.fixed_corners:
+        selected: list[tuple[int, int]] = []
+
+        def on_anchor(event, x, y, _flags, _param):
+            if event == cv2.EVENT_LBUTTONDOWN and not selected:
+                selected.append(to_original_point(x, y))
+
+        cv2.setMouseCallback("led-check", on_anchor)
+        print("Anchor mode: click PCB top-left corner, then press Enter.")
+        while True:
+            ok, frame = cap.read()
+            if not ok:
+                continue
+            preview = frame.copy()
+            cv2.putText(
+                preview,
+                "Click PCB top-left corner, then Enter",
+                (12, 30),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.7,
+                (0, 0, 255),
+                2,
+            )
+            if selected:
+                cv2.circle(preview, selected[0], 8, (0, 255, 255), -1)
+            cv2.imshow("led-check", to_display(preview))
+            key = cv2.waitKey(15) & 0xFF
+            if key == 27 or key == ord("q"):
+                cap.release()
+                cv2.destroyAllWindows()
+                return
+            if key in (10, 13) and selected:
+                anchor_top_left = selected[0]
+                break
+            if key == ord("r"):
+                selected.clear()
+        cv2.setMouseCallback("led-check", lambda *a: None)
     histories = defaultdict(lambda: deque(maxlen=max(1, args.stable_frames)))
     frame_idx = 0
     guided_index = 0
@@ -329,9 +441,22 @@ def main() -> None:
         if not ok:
             continue
         result = (
-            detector.check_led(frame, args.check_led, retry_margin=args.retry_margin)
+            detector.check_led(
+                frame,
+                args.check_led,
+                retry_margin=args.retry_margin,
+                anchor_top_left=anchor_top_left,
+                forced_plate_id=forced_plate_id,
+                override_corners=manual_corners,
+            )
             if args.check_led
-            else detector.detect(frame, retry_margin=args.retry_margin)
+            else detector.detect(
+                frame,
+                retry_margin=args.retry_margin,
+                anchor_top_left=anchor_top_left,
+                forced_plate_id=forced_plate_id,
+                override_corners=manual_corners,
+            )
         )
         frame_idx += 1
         smooth_frames = 1 if args.once else max(1, args.stable_frames)

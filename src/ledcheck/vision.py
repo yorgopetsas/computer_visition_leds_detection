@@ -31,6 +31,15 @@ def detect_plate_corners(
     frame: np.ndarray,
     expected_aspect_ratio: float | None = None,
 ) -> Optional[np.ndarray]:
+    candidates = detect_plate_candidates(frame, expected_aspect_ratio=expected_aspect_ratio, max_candidates=1)
+    return candidates[0] if candidates else None
+
+
+def detect_plate_candidates(
+    frame: np.ndarray,
+    expected_aspect_ratio: float | None = None,
+    max_candidates: int = 5,
+) -> list[np.ndarray]:
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     blur = cv2.GaussianBlur(gray, (5, 5), 0)
     edges = cv2.Canny(blur, 60, 160)
@@ -55,9 +64,9 @@ def detect_plate_corners(
         score = area * (0.5 + 0.5 * aspect_penalty)
         candidates.append((score, box))
     if not candidates:
-        return None
-    quad = sorted(candidates, key=lambda x: x[0], reverse=True)[0][1]
-    return order_corners(quad)
+        return []
+    ordered = sorted(candidates, key=lambda x: x[0], reverse=True)
+    return [order_corners(x[1]) for x in ordered[: max(1, max_candidates)]]
 
 
 def warp_plate(frame: np.ndarray, corners: np.ndarray, size: Tuple[int, int]) -> np.ndarray:

@@ -82,6 +82,23 @@ For fixed laboratory setups (camera and plate position stable), use fixed-corner
 python scripts/detect.py --fixed-corners --cam-width 1920 --cam-height 1080
 ```
 
+Interactive startup (recommended for test benches with slight placement drift):
+
+```bash
+python scripts/detect.py --fixed-corners --interactive-startup --show-led-overlay --guided-sequence --cam-width 1920 --cam-height 1080 --preview-scale 1.0
+```
+
+Interactive flow:
+
+1. Select PCB model in terminal.
+2. Click 4 PCB corners in order: top-left, top-right, bottom-right, bottom-left.
+3. Press `Enter` to confirm and start guided test.
+
+Corner selection hotkeys:
+
+- `R`: reset selected corners
+- `Q` / `Esc`: exit
+
 For production-like behavior with temporal smoothing, uncertainty handling, and live LED ROI feedback:
 
 ```bash

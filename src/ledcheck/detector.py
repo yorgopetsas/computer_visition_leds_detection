@@ -9,7 +9,7 @@ import numpy as np
 
 from .io_utils import load_plate_configs
 from .models import PlateConfig
-from .vision import detect_plate_corners, evaluate_leds, extract_rect, template_similarity, warp_plate
+from .vision import detect_plate_candidates, detect_plate_corners, evaluate_leds, extract_rect, template_similarity, warp_plate
 
 
 @dataclass
@@ -67,17 +67,36 @@ class LEDPlateDetector:
             return 0.45 * full_score + 0.55 * label_score
         return full_score
 
-    def detect(self, frame_bgr: np.ndarray, retry_margin: float = 0.02) -> DetectionResult:
+    def detect(
+        self,
+        frame_bgr: np.ndarray,
+        retry_margin: float = 0.02,
+        anchor_top_left: tuple[int, int] | None = None,
+        forced_plate_id: str | None = None,
+        override_corners: list[tuple[int, int]] | None = None,
+    ) -> DetectionResult:
+        candidate_plates = (
+            [self.configs[forced_plate_id]]
+            if forced_plate_id and forced_plate_id in self.configs
+            else list(self.configs.values())
+        )
         # Fixed-corners mode is useful when camera and plate placement are static.
         if self.use_config_corners:
             best_plate: Optional[PlateConfig] = None
             best_score = -1.0
             best_warp: Optional[np.ndarray] = None
             best_corners: Optional[np.ndarray] = None
-            for plate in self.configs.values():
-                if len(plate.corners) != 4:
+            for plate in candidate_plates:
+                if override_corners is not None and len(override_corners) == 4:
+                    corners = np.array(override_corners, dtype=np.float32)
+                elif len(plate.corners) == 4:
+                    corners = np.array(plate.corners, dtype=np.float32)
+                else:
                     continue
-                corners = np.array(plate.corners, dtype=np.float32)
+                if anchor_top_left is not None:
+                    dx = float(anchor_top_left[0]) - float(corners[0][0])
+                    dy = float(anchor_top_left[1]) - float(corners[0][1])
+                    corners = corners + np.array([dx, dy], dtype=np.float32)
                 warped = warp_plate(frame_bgr, corners, plate.canonical_size)
                 score = self._score_plate_match(warped, plate)
                 if best_plate is None or score > best_score:
@@ -106,29 +125,40 @@ class LEDPlateDetector:
         )
         if corners is None:
             return DetectionResult(ok=False, message="Plate not found in frame.")
-        corners_list = [(int(x), int(y)) for x, y in corners.tolist()]
+        corner_candidates = detect_plate_candidates(
+            frame_bgr,
+            expected_aspect_ratio=self.expected_aspect_ratio,
+            max_candidates=7,
+        )
+        if not corner_candidates:
+            corner_candidates = [corners]
 
         best_plate: Optional[PlateConfig] = None
         best_score = -1.0
         best_warp: Optional[np.ndarray] = None
-        for plate in self.configs.values():
-            warped = warp_plate(frame_bgr, corners, plate.canonical_size)
-            template = self.templates.get(plate.plate_id)
-            if template is None:
-                # Config exists but no template yet. Keep first as fallback.
-                if best_plate is None:
+        best_corners: Optional[np.ndarray] = None
+        for cand in corner_candidates:
+            for plate in candidate_plates:
+                warped = warp_plate(frame_bgr, cand, plate.canonical_size)
+                template = self.templates.get(plate.plate_id)
+                if template is None:
+                    # Config exists but no template yet. Keep first as fallback.
+                    if best_plate is None:
+                        best_plate = plate
+                        best_warp = warped
+                        best_score = 0.0
+                        best_corners = cand
+                    continue
+                score = self._score_plate_match(warped, plate)
+                if score > best_score:
+                    best_score = score
                     best_plate = plate
                     best_warp = warped
-                    best_score = 0.0
-                continue
-            score = self._score_plate_match(warped, plate)
-            if score > best_score:
-                best_score = score
-                best_plate = plate
-                best_warp = warped
+                    best_corners = cand
 
-        if best_plate is None or best_warp is None:
+        if best_plate is None or best_warp is None or best_corners is None:
             return DetectionResult(ok=False, message="No valid plate configuration.")
+        corners_list = [(int(x), int(y)) for x, y in best_corners.tolist()]
 
         if self.templates and best_score < best_plate.confidence_threshold:
             return DetectionResult(
@@ -156,8 +186,17 @@ class LEDPlateDetector:
         frame_bgr: np.ndarray,
         led_name: str,
         retry_margin: float = 0.02,
+        anchor_top_left: tuple[int, int] | None = None,
+        forced_plate_id: str | None = None,
+        override_corners: list[tuple[int, int]] | None = None,
     ) -> DetectionResult:
-        result = self.detect(frame_bgr, retry_margin=retry_margin)
+        result = self.detect(
+            frame_bgr,
+            retry_margin=retry_margin,
+            anchor_top_left=anchor_top_left,
+            forced_plate_id=forced_plate_id,
+            override_corners=override_corners,
+        )
         if not result.ok or not result.leds:
             return result
         led_name_norm = led_name.strip().lower()
