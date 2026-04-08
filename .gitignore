@@ -25,3 +25,4 @@ Thumbs.db
 # Runtime and local data
 *.log
 .env
+COMMANDS.txt
