@@ -33,10 +33,10 @@ Run once per plate. During calibration:
 2. click LED centers in the same order as names passed in `--leds`
 3. press `Enter` to save
 
-Example for `Electrico`:
+Example for `K2 Electro`:
 
 ```bash
-python scripts/calibrate.py --plate-id electrico --display-name "Edel Electrico" --label-hint "ELECTRICO" --leds "LEVA,AP1,AP2,CP"
+python scripts/calibrate.py --plate-id k2_es_electro --display-name "Edel K2 Electro" --label-hint "K2 Electro" --leds "35,34,33,32,31,30,29,28,27,26,25,24,23,22,21,20,F1,F2,SUBIDA,BAJADA,RAPIDA,LENTA,A1,A2,CP,FT,41,40,39,37,36C,36"
 ```
 
 Example for `E/S 3VF`:
@@ -96,44 +96,44 @@ Notes:
 Command-style pass/fail check:
 
 ```bash
-python scripts/detect.py --fixed-corners --expect-led "F2=ON" --stable-frames 3 --retry-margin 0.02 --once
+python scripts/detect.py --fixed-corners --expect-led "35=ON" --stable-frames 3 --retry-margin 0.02 --once
 ```
 
 Optional snapshot logging (JSONL):
 
 ```bash
-python scripts/detect.py --fixed-corners --expect-led "F2=ON" --log-file "logs/checks.jsonl"
+python scripts/detect.py --fixed-corners --expect-led "35=ON" --log-file "logs/checks.jsonl" --log-every-n-frames 30
 ```
 
-Press `Space` to print and append one snapshot entry.
+Press `Space` to print and append one snapshot entry, or use `--log-every-n-frames` for automatic logging.
 
 ## 4) Validation checklist (lab)
 
 Run:
 
 ```bash
-python scripts/detect.py --fixed-corners --expect-led "F2=ON" --stable-frames 3 --retry-margin 0.02 --show-led-overlay --cam-width 1920 --cam-height 1080
+python scripts/detect.py --fixed-corners --expect-led "35=ON" --stable-frames 3 --retry-margin 0.02 --show-led-overlay --cam-width 1920 --cam-height 1080
 ```
 
 Test sequence:
 
-1. Keep `F2` OFF -> expect `NOT_OK` or `RETRY`
-2. Turn `F2` ON -> expect `OK`
+1. Keep `35` OFF -> expect `NOT_OK` or `RETRY`
+2. Turn `35` ON -> expect `OK`
 3. Toggle quickly -> should briefly show `RETRY` before stabilizing
 
 Single-shot check:
 
 ```bash
-python scripts/detect.py --once --fixed-corners --expect-led "F2=ON"
+python scripts/detect.py --once --fixed-corners --expect-led "35=ON"
 ```
 
 Logging check:
 
 ```bash
-python scripts/detect.py --fixed-corners --expect-led "F2=ON" --log-file "logs/checks.jsonl"
+python scripts/detect.py --fixed-corners --expect-led "35=ON" --log-file "logs/checks.jsonl" --log-every-n-frames 30
 ```
 
-Press `Space` multiple times and verify each line in `logs/checks.jsonl` includes timestamp, plate data, `check_status`, and LED scores.
+Verify each line in `logs/checks.jsonl` includes timestamp, plate data, `check_status`, and LED scores.
 
 Tuning guidance:
 
@@ -141,6 +141,37 @@ Tuning guidance:
 - More robust response: `--stable-frames 4`
 - Fewer `RETRY`: `--retry-margin 0.01`
 - Safer uncertainty zone: `--retry-margin 0.03`
+
+## 5) Calibrate and validate `E/S 3VF`
+
+1. Calibrate second plate:
+
+```bash
+python scripts/calibrate.py --plate-id es_3vf --display-name "Edel E/S 3VF" --label-hint "E/S 3VF" --size 1600x960 --cam-width 1920 --cam-height 1080 --leds "LEVA,M-RS1,RS2,A1,A2,CP"
+```
+
+2. Run same live validation style (replace expected LED as needed):
+
+```bash
+python scripts/detect.py --fixed-corners --expect-led "LEVA=ON" --stable-frames 3 --retry-margin 0.02 --show-led-overlay --log-file "logs/checks.jsonl"
+```
+
+3. Collect samples for **both** plates in the same `logs/checks.jsonl`.
+
+## 6) Unify acceptance criteria for both plates
+
+Run acceptance report:
+
+```bash
+python scripts/validate_acceptance.py --log-file "logs/checks.jsonl" --min-ok-rate 0.95 --max-retry-rate 0.10
+```
+
+Suggested initial production targets:
+
+- per-plate OK rate >= `95%`
+- per-plate RETRY rate <= `10%`
+
+When both plates pass repeatedly, keep those values as baseline and tighten over time.
 
 Check one LED by name:
 
