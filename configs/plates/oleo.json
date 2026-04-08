@@ -1,0 +1,319 @@
+{
+  "plate_id": "oleo",
+  "display_name": "Edel K2 Oleo",
+  "bottom_label_hint": "ELECTRIC2",
+  "canonical_size": [
+    1600,
+    960
+  ],
+  "corners": [
+    [
+      697,
+      556
+    ],
+    [
+      1306,
+      562
+    ],
+    [
+      1308,
+      1008
+    ],
+    [
+      693,
+      1003
+    ]
+  ],
+  "leds": [
+    {
+      "name": "35",
+      "center": [
+        171,
+        65
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "34",
+      "center": [
+        171,
+        107
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "33",
+      "center": [
+        172,
+        146
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "32",
+      "center": [
+        171,
+        188
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "31",
+      "center": [
+        173,
+        228
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "30",
+      "center": [
+        172,
+        268
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "29",
+      "center": [
+        171,
+        311
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "28",
+      "center": [
+        170,
+        351
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "27",
+      "center": [
+        171,
+        389
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "26",
+      "center": [
+        169,
+        431
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "25",
+      "center": [
+        171,
+        469
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "24",
+      "center": [
+        171,
+        512
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "23",
+      "center": [
+        169,
+        552
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "22",
+      "center": [
+        170,
+        592
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "21",
+      "center": [
+        168,
+        634
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "20",
+      "center": [
+        167,
+        674
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "F1",
+      "center": [
+        850,
+        66
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "F2",
+      "center": [
+        850,
+        105
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "SUBIDA",
+      "center": [
+        847,
+        143
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "BAJADA",
+      "center": [
+        848,
+        185
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "TRIANGULO",
+      "center": [
+        848,
+        225
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "EXTRELLA",
+      "center": [
+        850,
+        266
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "A1",
+      "center": [
+        848,
+        309
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "A2",
+      "center": [
+        848,
+        349
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "CP",
+      "center": [
+        848,
+        389
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "FT",
+      "center": [
+        846,
+        429
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "41",
+      "center": [
+        848,
+        468
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "40",
+      "center": [
+        846,
+        511
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "39",
+      "center": [
+        847,
+        550
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "37",
+      "center": [
+        845,
+        593
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "36C",
+      "center": [
+        845,
+        630
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "36",
+      "center": [
+        846,
+        673
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    }
+  ],
+  "template_image": "C:\\Users\\ecommerce\\envz\\computer_visition_leds_detection\\configs\\plates\\oleo_template.png",
+  "confidence_threshold": 0.22
+}

@@ -70,6 +70,12 @@ def read_args() -> argparse.Namespace:
         default="",
         help="Optional JSONL log file path for snapshot results.",
     )
+    parser.add_argument(
+        "--log-every-n-frames",
+        type=int,
+        default=0,
+        help="If >0, append one log entry every N frames (no Space key required).",
+    )
     return parser.parse_args()
 
 
@@ -219,6 +225,7 @@ def main() -> None:
     cv2.namedWindow("led-check", cv2.WINDOW_NORMAL)
     cv2.resizeWindow("led-check", 1400, 900)
     histories = defaultdict(lambda: deque(maxlen=max(1, args.stable_frames)))
+    frame_idx = 0
 
     while True:
         if cv2.getWindowProperty("led-check", cv2.WND_PROP_VISIBLE) < 1:
@@ -231,6 +238,7 @@ def main() -> None:
             if args.check_led
             else detector.detect(frame, retry_margin=args.retry_margin)
         )
+        frame_idx += 1
         smooth_frames = 1 if args.once else max(1, args.stable_frames)
         result = _apply_temporal_smoothing(result, histories, smooth_frames)
         check_status, check_message = _evaluate_expectation(result, expected)
@@ -292,6 +300,8 @@ def main() -> None:
             print_result(result)
             if check_status != "N/A":
                 print(check_message)
+            _log_snapshot(args.log_file, result, check_status, check_message)
+        if args.log_file and args.log_every_n_frames > 0 and (frame_idx % args.log_every_n_frames == 0):
             _log_snapshot(args.log_file, result, check_status, check_message)
 
     cap.release()

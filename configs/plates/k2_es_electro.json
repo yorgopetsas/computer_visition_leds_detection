@@ -1,0 +1,319 @@
+{
+  "plate_id": "k2_es_electro",
+  "display_name": "Edel K2 Electro",
+  "bottom_label_hint": "K2 Electro",
+  "canonical_size": [
+    1600,
+    960
+  ],
+  "corners": [
+    [
+      699,
+      554
+    ],
+    [
+      1303,
+      556
+    ],
+    [
+      1303,
+      997
+    ],
+    [
+      697,
+      1002
+    ]
+  ],
+  "leds": [
+    {
+      "name": "35",
+      "center": [
+        164,
+        74
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "34",
+      "center": [
+        167,
+        116
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "33",
+      "center": [
+        166,
+        153
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "32",
+      "center": [
+        168,
+        195
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "31",
+      "center": [
+        169,
+        235
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "30",
+      "center": [
+        169,
+        274
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "29",
+      "center": [
+        168,
+        312
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "28",
+      "center": [
+        169,
+        356
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "27",
+      "center": [
+        171,
+        392
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "26",
+      "center": [
+        167,
+        435
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "25",
+      "center": [
+        168,
+        475
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "24",
+      "center": [
+        165,
+        514
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "23",
+      "center": [
+        170,
+        554
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "22",
+      "center": [
+        169,
+        598
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "21",
+      "center": [
+        167,
+        636
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "20",
+      "center": [
+        167,
+        677
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "F1",
+      "center": [
+        844,
+        71
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "F2",
+      "center": [
+        844,
+        110
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "SUBIDA",
+      "center": [
+        846,
+        149
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "BAJADA",
+      "center": [
+        847,
+        191
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "RAPIDA",
+      "center": [
+        846,
+        233
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "LENTA",
+      "center": [
+        847,
+        275
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "A1",
+      "center": [
+        844,
+        311
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "A2",
+      "center": [
+        850,
+        352
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "CP",
+      "center": [
+        848,
+        390
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "FT",
+      "center": [
+        847,
+        430
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "41",
+      "center": [
+        847,
+        471
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "40",
+      "center": [
+        848,
+        510
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "39",
+      "center": [
+        847,
+        550
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "37",
+      "center": [
+        849,
+        596
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "36C",
+      "center": [
+        849,
+        631
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "36",
+      "center": [
+        848,
+        672
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    }
+  ],
+  "template_image": "C:\\Users\\ecommerce\\envz\\computer_visition_leds_detection\\configs\\plates\\k2_es_electro_template.png",
+  "confidence_threshold": 0.22
+}
