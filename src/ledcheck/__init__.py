@@ -1,0 +1,2 @@
+"""LED plate checker package."""
+

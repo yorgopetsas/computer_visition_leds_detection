@@ -1,0 +1,17 @@
+{
+  "plate_id": "electrico",
+  "display_name": "Edel Electrico",
+  "bottom_label_hint": "ELECTRICO",
+  "canonical_size": [900, 540],
+  "corners": [],
+  "leds": [
+    {
+      "name": "LEVA",
+      "center": [100, 100],
+      "radius": 8,
+      "threshold": 0.12
+    }
+  ],
+  "template_image": "configs/plates/electrico_template.png",
+  "confidence_threshold": 0.22
+}

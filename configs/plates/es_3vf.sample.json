@@ -1,0 +1,17 @@
+{
+  "plate_id": "es_3vf",
+  "display_name": "Edel E/S 3VF",
+  "bottom_label_hint": "E/S 3VF",
+  "canonical_size": [900, 540],
+  "corners": [],
+  "leds": [
+    {
+      "name": "LEVA",
+      "center": [100, 100],
+      "radius": 8,
+      "threshold": 0.12
+    }
+  ],
+  "template_image": "configs/plates/es_3vf_template.png",
+  "confidence_threshold": 0.22
+}
