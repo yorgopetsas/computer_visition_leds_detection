@@ -27,6 +27,8 @@ def read_args() -> argparse.Namespace:
         help="Bottom text hint (e.g. ELECTRICO or E/S 3VF).",
     )
     parser.add_argument("--camera", type=int, default=0, help="Webcam index (default 0).")
+    parser.add_argument("--cam-width", type=int, default=1920, help="Requested camera width.")
+    parser.add_argument("--cam-height", type=int, default=1080, help="Requested camera height.")
     parser.add_argument(
         "--output",
         default="configs/plates",
@@ -34,8 +36,8 @@ def read_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--size",
-        default="900x540",
-        help="Canonical warped size WxH, default 900x540.",
+        default="1600x960",
+        help="Canonical warped size WxH, default 1600x960.",
     )
     parser.add_argument(
         "--leds",
@@ -50,10 +52,14 @@ def main() -> None:
     size_tokens = args.size.lower().split("x")
     canonical_size = (int(size_tokens[0]), int(size_tokens[1]))
     led_names = [x.strip() for x in args.leds.split(",") if x.strip()]
+    if len(set(led_names)) != len(led_names):
+        print("Warning: duplicate LED names detected. Single LED checks may be ambiguous.")
 
     cap = cv2.VideoCapture(args.camera)
     if not cap.isOpened():
         raise RuntimeError(f"Cannot open camera index {args.camera}")
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH, args.cam_width)
+    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, args.cam_height)
 
     corners = []
     frame_ref = {"frame": None}
@@ -62,10 +68,11 @@ def main() -> None:
         if event == cv2.EVENT_LBUTTONDOWN and len(corners) < 4:
             corners.append((x, y))
 
-    cv2.namedWindow("calibrate-corners")
+    cv2.namedWindow("calibrate-corners", cv2.WINDOW_NORMAL)
+    cv2.resizeWindow("calibrate-corners", 1400, 900)
     cv2.setMouseCallback("calibrate-corners", on_corners)
     print("Click 4 plate corners in this order: top-left, top-right, bottom-right, bottom-left.")
-    print("Press ENTER when done, or ESC to cancel.")
+    print("Press ENTER when done, BACKSPACE to undo last point, or ESC to cancel.")
 
     while True:
         ok, frame = cap.read()
@@ -76,12 +83,16 @@ def main() -> None:
         for i, p in enumerate(corners):
             cv2.circle(display, p, 5, (0, 255, 0), -1)
             cv2.putText(display, str(i + 1), (p[0] + 6, p[1] - 6), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
+        if len(corners) == 4:
+            cv2.polylines(display, [np.array(corners, dtype=np.int32)], True, (0, 255, 255), 2)
         cv2.imshow("calibrate-corners", display)
         key = cv2.waitKey(15) & 0xFF
         if key == 27:
             cap.release()
             cv2.destroyAllWindows()
             return
+        if key == 8 and corners:
+            corners.pop()
         if key in (10, 13) and len(corners) == 4:
             break
 
@@ -94,12 +105,13 @@ def main() -> None:
         if event == cv2.EVENT_LBUTTONDOWN:
             led_points.append((x, y))
 
-    cv2.namedWindow("calibrate-leds")
+    cv2.namedWindow("calibrate-leds", cv2.WINDOW_NORMAL)
+    cv2.resizeWindow("calibrate-leds", 1600, 980)
     cv2.setMouseCallback("calibrate-leds", on_leds)
     print("Now click LED centers on the warped plate image.")
     if led_names:
         print(f"Expected order ({len(led_names)}): {', '.join(led_names)}")
-    print("Press ENTER when done.")
+    print("Press ENTER when done, BACKSPACE to undo last LED.")
 
     while True:
         view = warped.copy()
@@ -113,6 +125,8 @@ def main() -> None:
             cap.release()
             cv2.destroyAllWindows()
             return
+        if key == 8 and led_points:
+            led_points.pop()
         if key in (10, 13) and led_points:
             break
 

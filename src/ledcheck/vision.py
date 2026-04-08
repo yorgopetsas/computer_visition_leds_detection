@@ -27,27 +27,35 @@ def order_corners(pts: np.ndarray) -> np.ndarray:
     return rect
 
 
-def detect_plate_corners(frame: np.ndarray) -> Optional[np.ndarray]:
+def detect_plate_corners(
+    frame: np.ndarray,
+    expected_aspect_ratio: float | None = None,
+) -> Optional[np.ndarray]:
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     blur = cv2.GaussianBlur(gray, (5, 5), 0)
     edges = cv2.Canny(blur, 60, 160)
     contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     h, w = frame.shape[:2]
-    min_area = (h * w) * 0.05
+    min_area = (h * w) * 0.02
+    expected = expected_aspect_ratio if expected_aspect_ratio else 1.65
     candidates: List[Tuple[float, np.ndarray]] = []
     for c in contours:
         area = cv2.contourArea(c)
         if area < min_area:
             continue
-        peri = cv2.arcLength(c, True)
-        approx = cv2.approxPolyDP(c, 0.03 * peri, True)
-        if len(approx) != 4:
+        rect = cv2.minAreaRect(c)
+        rw, rh = rect[1]
+        if rw <= 0 or rh <= 0:
             continue
-        quad = approx.reshape(4, 2).astype(np.float32)
-        candidates.append((area, quad))
+        aspect = max(rw, rh) / max(1e-6, min(rw, rh))
+        if aspect < 1.2 or aspect > 2.8:
+            continue
+        box = cv2.boxPoints(rect).astype(np.float32)
+        aspect_penalty = max(0.0, 1.0 - min(1.0, abs(aspect - expected) / expected))
+        score = area * (0.5 + 0.5 * aspect_penalty)
+        candidates.append((score, box))
     if not candidates:
         return None
-    # Choose the largest 4-point contour.
     quad = sorted(candidates, key=lambda x: x[0], reverse=True)[0][1]
     return order_corners(quad)
 

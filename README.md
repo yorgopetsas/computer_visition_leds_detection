@@ -50,6 +50,12 @@ This creates:
 - `configs/plates/<plate_id>.json`
 - `configs/plates/<plate_id>_template.png`
 
+Useful calibration options:
+
+- `--cam-width 1920 --cam-height 1080` to request HD capture
+- `--size 1600x960` to save a higher-resolution warped template for dense LED layouts
+- `Backspace` during corner or LED clicking to undo last point
+
 ## 3) Run live detection
 
 ```bash
@@ -65,6 +71,14 @@ Single-shot detection:
 
 ```bash
 python scripts/detect.py --once
+```
+
+The `--once` mode keeps the result window open until a key is pressed, so you can inspect overlays.
+
+For fixed laboratory setups (camera and plate position stable), use fixed-corners mode:
+
+```bash
+python scripts/detect.py --fixed-corners --cam-width 1920 --cam-height 1080
 ```
 
 Check one LED by name:
