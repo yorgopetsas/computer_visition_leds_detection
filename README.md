@@ -173,6 +173,28 @@ Suggested initial production targets:
 
 When both plates pass repeatedly, keep those values as baseline and tighten over time.
 
+## 7) Auto-tune LED thresholds from logs
+
+After collecting ON/OFF expected checks in `logs/checks.jsonl`, run a dry run:
+
+```bash
+python scripts/tune_thresholds.py --log-file "logs/checks.jsonl" --config-dir "configs/plates" --min-samples 6 --safety-margin 0.01
+```
+
+If values look good, write tuned thresholds into config files:
+
+```bash
+python scripts/tune_thresholds.py --log-file "logs/checks.jsonl" --config-dir "configs/plates" --min-samples 6 --safety-margin 0.01 --write
+```
+
+Recommended test flow for this phase:
+
+1. Run detection for a target LED with expected OFF and collect logs.
+2. Run detection for the same LED with expected ON and collect logs.
+3. Repeat enough times (at least 6 ON and 6 OFF samples per LED).
+4. Run tuner dry run and inspect suggested threshold changes.
+5. Apply with `--write`, then re-run validation checks.
+
 Check one LED by name:
 
 ```bash
