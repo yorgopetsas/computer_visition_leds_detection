@@ -1,0 +1,354 @@
+{
+  "plate_id": "k2_es_3vf",
+  "display_name": "Edel K2 3vf",
+  "bottom_label_hint": "K2 3vf",
+  "canonical_size": [
+    1600,
+    960
+  ],
+  "corners": [
+    [
+      676,
+      184
+    ],
+    [
+      1351,
+      196
+    ],
+    [
+      1332,
+      640
+    ],
+    [
+      682,
+      632
+    ]
+  ],
+  "leds": [
+    {
+      "name": "F2_FOTOCELULA_2",
+      "center": [
+        181,
+        82
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "F1FOTOCELULA_1",
+      "center": [
+        182,
+        123
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "35_PISADERA_MOVIL",
+      "center": [
+        182,
+        163
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "34_PULS_CIERRA_PUERTAS",
+      "center": [
+        180,
+        204
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "33_BOMBEROS_CABINA",
+      "center": [
+        184,
+        242
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "32_SONDA_TERMICA",
+      "center": [
+        185,
+        286
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "31_REAPERTURA",
+      "center": [
+        180,
+        325
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "30_F_C_ABRRIR_PUERTAS",
+      "center": [
+        181,
+        364
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "29_F_C_CERRAR_PUERTAS",
+      "center": [
+        184,
+        403
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "28_COMPLETO",
+      "center": [
+        183,
+        444
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "27_BOMBEROS_EXTERIOR",
+      "center": [
+        182,
+        483
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "26_INSPECCION",
+      "center": [
+        181,
+        521
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "25_PARADOR_DE_SUBIDA",
+      "center": [
+        181,
+        562
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "24_PARRADOR_DE_BAJADA",
+      "center": [
+        181,
+        600
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "23_EXCESO_DE_CARGA",
+      "center": [
+        182,
+        642
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "22_CAMBIO_C_P_SUB",
+      "center": [
+        180,
+        684
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "21PAROI_C_P_BAJ",
+      "center": [
+        181,
+        722
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "20_Vdc",
+      "center": [
+        182,
+        764
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "EN_ENABLE",
+      "center": [
+        766,
+        83
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "FWD_SUBIDA",
+      "center": [
+        765,
+        124
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "REV_BAJADA",
+      "center": [
+        763,
+        160
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "X1_SENAL_VELOCIDAD_1",
+      "center": [
+        764,
+        203
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "X2_SENAL_VELOCIDAD_2",
+      "center": [
+        766,
+        244
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "X3_SENAL_VELOCIDAD_3",
+      "center": [
+        764,
+        284
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "CF",
+      "center": [
+        762,
+        324
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "A1_ABRIR_PUERTAS_1",
+      "center": [
+        767,
+        404
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "A2_ABRIR_PUERTAS_2",
+      "center": [
+        762,
+        443
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "CP_CERRAR_PUERTAS",
+      "center": [
+        765,
+        484
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "41_SERIE_PUERTAS_DE_CABINA",
+      "center": [
+        762,
+        566
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "40_SERIE_CERROJOS",
+      "center": [
+        765,
+        605
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "39_SERIE_PUERTAS_EXTERIORES",
+      "center": [
+        763,
+        643
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "37_SERIE_SEGURIDADES_HUECO",
+      "center": [
+        764,
+        683
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "SC_SERIE_SEGURIDADES_CABINA",
+      "center": [
+        766,
+        724
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "36_TENSION_SERIES",
+      "center": [
+        762,
+        764
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    }
+  ],
+  "label_roi": [
+    402,
+    865,
+    743,
+    945
+  ],
+  "label_template_image": "C:\\Users\\ecommerce\\envz\\computer_visition_leds_detection\\configs\\plates\\k2_es_3vf_label_template.png",
+  "template_image": "C:\\Users\\ecommerce\\envz\\computer_visition_leds_detection\\configs\\plates\\k2_es_3vf_template.png",
+  "confidence_threshold": 0.22,
+  "physical_spec": {
+    "width_mm": 177.0,
+    "height_mm": 119.0
+  },
+  "camera_setup": {
+    "nominal_distance_mm": 383.0,
+    "distance_tolerance_mm": 100.0,
+    "max_tilt_deg": 10.0,
+    "background_notes": "stable daylight, brown background"
+  }
+}

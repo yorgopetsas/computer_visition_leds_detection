@@ -1,0 +1,336 @@
+{
+  "plate_id": "k2_es_electro",
+  "display_name": "Edel K2 Electro",
+  "bottom_label_hint": "K2 Electro",
+  "canonical_size": [
+    1600,
+    960
+  ],
+  "corners": [
+    [
+      687,
+      190
+    ],
+    [
+      1307,
+      196
+    ],
+    [
+      1291,
+      638
+    ],
+    [
+      697,
+      634
+    ]
+  ],
+  "leds": [
+    {
+      "name": "35_PISADERA_MOVIL",
+      "center": [
+        173,
+        71
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "34_PULSADOR_CIERRA_P",
+      "center": [
+        173,
+        109
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "33_BOMBEROS_CABINA",
+      "center": [
+        174,
+        151
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "32_SONDA_TERMICA",
+      "center": [
+        174,
+        191
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "31_REAPERTURA",
+      "center": [
+        173,
+        233
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "30_F_C_ABRRIR_PUERTAS",
+      "center": [
+        174,
+        270
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "29_F_C_CERRAR_PUERTAS",
+      "center": [
+        174,
+        313
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "28_COMPLETO",
+      "center": [
+        172,
+        355
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "27_BOMBEROS_EXT",
+      "center": [
+        173,
+        393
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "26_INSPECCION",
+      "center": [
+        174,
+        433
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "25_PARADO_DE_SUBIDA",
+      "center": [
+        172,
+        472
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "24_PARRADOR_DE_BAJADA",
+      "center": [
+        174,
+        514
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "23_EXCESO_DE_CARGA",
+      "center": [
+        172,
+        557
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "22_DETECTOR_CAMBIO_CP_SUB",
+      "center": [
+        175,
+        595
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "21_DETECTOR_PARO_CP_BAJ",
+      "center": [
+        171,
+        636
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "20_24V",
+      "center": [
+        172,
+        676
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "F1_FOTOCELULA_OP1",
+      "center": [
+        850,
+        73
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "F2_FOTOCELULA_OP2",
+      "center": [
+        852,
+        112
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "SUBIDA",
+      "center": [
+        851,
+        155
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "BAJADA",
+      "center": [
+        850,
+        195
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "RAPIDA",
+      "center": [
+        850,
+        234
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "LENTA",
+      "center": [
+        850,
+        274
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "ABRIR_PUERTAS_OP1",
+      "center": [
+        849,
+        315
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "ABRIR_PUERTAS_OP2",
+      "center": [
+        849,
+        356
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "CP_CERRAR_PUERTAS",
+      "center": [
+        849,
+        395
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "FT_INHIBICION_TELEFONO",
+      "center": [
+        849,
+        437
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "41_SERIE_PUERTAS_DE_CABINA",
+      "center": [
+        848,
+        476
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "40_SERIE_CERROJOS",
+      "center": [
+        848,
+        516
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "39_SERIE_PUERTAS_EXTERIORES",
+      "center": [
+        849,
+        558
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "37_SERIE_DE_SEG_HUECO",
+      "center": [
+        850,
+        598
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "36C_SERIE_SEG_CABINA",
+      "center": [
+        847,
+        638
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    },
+    {
+      "name": "36_TENSION_SERIES",
+      "center": [
+        847,
+        678
+      ],
+      "radius": 8,
+      "threshold": 0.12
+    }
+  ],
+  "label_roi": [
+    1045,
+    827,
+    1351,
+    874
+  ],
+  "label_template_image": "C:\\Users\\ecommerce\\envz\\computer_visition_leds_detection\\configs\\plates\\k2_es_electro_label_template.png",
+  "template_image": "C:\\Users\\ecommerce\\envz\\computer_visition_leds_detection\\configs\\plates\\k2_es_electro_template.png",
+  "confidence_threshold": 0.22,
+  "physical_spec": {
+    "width_mm": 163.0,
+    "height_mm": 119.0
+  },
+  "camera_setup": {
+    "nominal_distance_mm": 383.0,
+    "distance_tolerance_mm": 100.0,
+    "max_tilt_deg": 10.0,
+    "background_notes": "stable daylight, brown background"
+  }
+}
