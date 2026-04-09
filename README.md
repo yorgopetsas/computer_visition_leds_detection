@@ -15,8 +15,10 @@ The detector is designed for production workflows:
 ## Project layout
 
 - `src/ledcheck/`: core detection modules
+- `src/ledcheck_beta/`: experimental beta helpers (see [README_beta.md](README_beta.md))
 - `scripts/calibrate.py`: interactive calibration utility
 - `scripts/detect.py`: live webcam detector
+- `scripts/detect_beta.py`: beta live runner (optional)
 - `configs/plates/`: generated plate configs and templates
 
 ## 1) Setup
@@ -55,13 +57,53 @@ Useful calibration options:
 
 - `--cam-width 1920 --cam-height 1080` to request HD capture
 - `--size 1600x960` to save a higher-resolution warped template for dense LED layouts
+- `--camera 1` to force the external USB webcam (instead of laptop camera)
 - `Backspace` during corner or LED clicking to undo last point
+- Physical metadata can be saved in each plate config:
+  - `--plate-width-mm 163 --plate-height-mm 119`
+  - `--camera-distance-mm 383 --distance-tolerance-mm 100 --max-tilt-deg 10`
+  - `--background-notes "stable daylight, brown background"`
 
 ## 3) Run live detection
 
 ```bash
 python scripts/detect.py
 ```
+
+To discover camera indexes and pick your external webcam:
+
+```bash
+python scripts/detect.py --list-cameras
+```
+
+Then run detection with the selected camera, for example:
+
+```bash
+python scripts/detect.py --camera 1 --cam-width 1920 --cam-height 1080
+```
+
+**Beta (experimental):** local LED refinement and `detect_beta.py` are documented in [README_beta.md](README_beta.md), including the `[beta]` git commit prefix for beta-only changes.
+
+## Camera intrinsics (one-time)
+
+If you want `fx, fy, cx, cy` and lens distortion for more precise geometry in future updates:
+
+1. Print a chessboard pattern (default expected: `9x6` inner corners).
+2. Show it to the camera at multiple angles/distances.
+3. Capture at least ~20 good frames.
+
+Run:
+
+```bash
+python scripts/calibrate_camera.py --camera 1 --cam-width 1920 --cam-height 1080 --board-cols 9 --board-rows 6 --square-mm 20 --min-frames 20 --output "configs/camera_intrinsics.json"
+```
+
+The output JSON includes:
+
+- `fx`, `fy`, `cx`, `cy`
+- full camera matrix
+- distortion coefficients
+- RMS reprojection error
 
 Keys:
 

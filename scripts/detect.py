@@ -20,6 +20,11 @@ from ledcheck.detector import LEDPlateDetector
 
 def read_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run live LED plate checks from webcam.")
+    parser.add_argument(
+        "--list-cameras",
+        action="store_true",
+        help="Probe and print available camera indices, then exit.",
+    )
     parser.add_argument("--camera", type=int, default=0, help="Webcam index.")
     parser.add_argument("--cam-width", type=int, default=1920, help="Requested camera width.")
     parser.add_argument("--cam-height", type=int, default=1080, help="Requested camera height.")
@@ -98,6 +103,17 @@ def read_args() -> argparse.Namespace:
         help="Prompt for PCB model and 4 corners before starting detection.",
     )
     return parser.parse_args()
+
+
+def _list_available_cameras(max_index: int = 8) -> list[int]:
+    found: list[int] = []
+    for idx in range(max(1, max_index)):
+        cap = cv2.VideoCapture(idx)
+        ok, _ = cap.read()
+        cap.release()
+        if ok:
+            found.append(idx)
+    return found
 
 
 def _stable_state(history: deque[str], stable_frames: int) -> str:
@@ -306,6 +322,14 @@ def _log_snapshot(path: str, result, check_status: str, check_message: str) -> N
 
 def main() -> None:
     args = read_args()
+    if args.list_cameras:
+        cameras = _list_available_cameras()
+        if not cameras:
+            print("No cameras found.")
+        else:
+            print("Available camera indices:", ", ".join(str(x) for x in cameras))
+            print("Tip: for your external USB webcam, try the highest listed index first.")
+        return
     expected = _parse_expected(args.expect_led)
     detector = LEDPlateDetector(
         (ROOT / args.config_dir).resolve(),

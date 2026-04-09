@@ -13,7 +13,7 @@ if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
 from ledcheck.io_utils import save_plate_config
-from ledcheck.models import LEDConfig, PlateConfig
+from ledcheck.models import CameraSetup, LEDConfig, PhysicalSpec, PlateConfig
 from ledcheck.vision import order_corners, warp_plate
 
 
@@ -49,6 +49,31 @@ def read_args() -> argparse.Namespace:
         "--leds",
         default="",
         help="Comma-separated LED names in click order, e.g. POWER,ALARM,RUN.",
+    )
+    parser.add_argument("--plate-width-mm", type=float, default=0.0, help="Real PCB width in mm.")
+    parser.add_argument("--plate-height-mm", type=float, default=0.0, help="Real PCB height in mm.")
+    parser.add_argument(
+        "--camera-distance-mm",
+        type=float,
+        default=0.0,
+        help="Nominal camera-to-PCB center distance in mm.",
+    )
+    parser.add_argument(
+        "--distance-tolerance-mm",
+        type=float,
+        default=100.0,
+        help="Allowed distance variation (+/- mm).",
+    )
+    parser.add_argument(
+        "--max-tilt-deg",
+        type=float,
+        default=10.0,
+        help="Max expected plate tilt angle in degrees.",
+    )
+    parser.add_argument(
+        "--background-notes",
+        default="",
+        help="Background and lighting notes (stored in config metadata).",
     )
     return parser.parse_args()
 
@@ -227,10 +252,26 @@ def main() -> None:
         label_roi=label_roi,
         label_template_image=str(label_template_path),
         template_image=str(template_path),
+        physical_spec=PhysicalSpec(
+            width_mm=float(args.plate_width_mm),
+            height_mm=float(args.plate_height_mm),
+        ),
+        camera_setup=CameraSetup(
+            nominal_distance_mm=float(args.camera_distance_mm),
+            distance_tolerance_mm=float(args.distance_tolerance_mm),
+            max_tilt_deg=float(args.max_tilt_deg),
+            background_notes=args.background_notes,
+        ),
     )
     save_plate_config(plate, config_path)
     print(f"Saved config: {config_path}")
     print(f"Saved template image: {template_path}")
+    if plate.physical_spec.width_mm > 0 and plate.physical_spec.height_mm > 0:
+        print(
+            f"Physical metadata: {plate.physical_spec.width_mm:.1f}mm x {plate.physical_spec.height_mm:.1f}mm, "
+            f"distance={plate.camera_setup.nominal_distance_mm:.1f}mm +/- {plate.camera_setup.distance_tolerance_mm:.1f}mm, "
+            f"tilt<={plate.camera_setup.max_tilt_deg:.1f}deg"
+        )
     cap.release()
     cv2.destroyAllWindows()
 

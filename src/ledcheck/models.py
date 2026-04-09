@@ -8,6 +8,18 @@ from pydantic import BaseModel, Field
 Point = Tuple[int, int]
 
 
+class PhysicalSpec(BaseModel):
+    width_mm: float = 0.0
+    height_mm: float = 0.0
+
+
+class CameraSetup(BaseModel):
+    nominal_distance_mm: float = 0.0
+    distance_tolerance_mm: float = 0.0
+    max_tilt_deg: float = 0.0
+    background_notes: str = ""
+
+
 class LEDConfig(BaseModel):
     name: str
     center: Point
@@ -28,4 +40,6 @@ class PlateConfig(BaseModel):
     label_template_image: str = ""
     template_image: str = ""
     confidence_threshold: float = 0.22
+    physical_spec: PhysicalSpec = Field(default_factory=PhysicalSpec)
+    camera_setup: CameraSetup = Field(default_factory=CameraSetup)
 
