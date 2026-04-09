@@ -61,6 +61,18 @@ def main() -> None:
         )
         status = f"Samples: {len(objpoints)} / {args.min_frames}"
         cv2.putText(view, status, (14, 28), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 255), 2)
+        corner_status = "Corners: FOUND" if found else "Corners: NOT FOUND"
+        corner_color = (0, 220, 0) if found else (0, 0, 255)
+        cv2.putText(view, corner_status, (14, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.8, corner_color, 2)
+        cv2.putText(
+            view,
+            f"Pattern expected: {args.board_cols}x{args.board_rows} inner corners",
+            (14, 92),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.65,
+            (255, 255, 0),
+            2,
+        )
         if found:
             corners2 = cv2.cornerSubPix(gray, corners, (11, 11), (-1, -1), criteria)
             cv2.drawChessboardCorners(view, board_size, corners2, found)
@@ -71,10 +83,13 @@ def main() -> None:
             cap.release()
             cv2.destroyAllWindows()
             return
-        if key == ord(" ") and found:
-            objpoints.append(objp.copy())
-            imgpoints.append(corners2.copy())
-            print(f"Captured sample {len(objpoints)}")
+        if key == ord(" "):
+            if found:
+                objpoints.append(objp.copy())
+                imgpoints.append(corners2.copy())
+                print(f"Captured sample {len(objpoints)}")
+            else:
+                print("No corners detected in current frame. Move board, reduce glare, or fix pattern size.")
         if key in (10, 13):
             if len(objpoints) >= args.min_frames:
                 break

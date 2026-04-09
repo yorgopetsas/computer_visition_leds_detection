@@ -23,6 +23,7 @@ dist/
 Thumbs.db
 
 # Runtime and local data
+logs/
 *.log
 .env
 COMMANDS.txt
